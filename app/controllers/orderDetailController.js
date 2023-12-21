@@ -8,7 +8,7 @@ const getAllOrderDetails = async (req, res) => {
     try {
         const orderDetailList = await orderDetailModel.find()
         if (orderDetailList && orderDetailList.length > 0) {
-            status.successPaginationStatus(res, orderDetailList, pagination, 'Get all orderDetails successfully')
+            status.successStatus(res, orderDetailList, 'Get all orderDetails successfully')
         } else {
             status.notFoundStatus(res, notFoundOrderDetail)
         }

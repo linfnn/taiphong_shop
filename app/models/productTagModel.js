@@ -7,6 +7,10 @@ const productTagModel = new mongoose.Schema({
         required: true,
         unique: true
     },
+    link: {
+        type: String,
+        unique: true
+    },
     isDeleted: {
         type: Boolean,
         default: false

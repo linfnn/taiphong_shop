@@ -153,7 +153,7 @@ const updateProduct = async (req, res) => {
         }
         const updatedProduct = await productModel.findByIdAndUpdate(productId, req.body)
         if (updatedProduct && updatedProduct.length > 0) {
-            status.successCreateStatus(res, await productModel.findById(productId), 'Update product by id successfully')
+            status.successStatus(res, await productModel.findById(productId), 'Update product by id successfully')
         } else {
             status.notFoundStatus(res, notFoundProduct)
         }
@@ -170,7 +170,7 @@ const deleteProduct = async (req, res) => {
         }
         const updatedProduct = await productModel.findByIdAndUpdate(productId, { isDeleted: true })
         if (updatedProduct && updatedProduct.length > 0) {
-            status.successCreateStatus(res, await productModel.findById(productId), 'Soft delete product successfully')
+            status.successStatus(res, await productModel.findById(productId), 'Soft delete product successfully')
         } else {
             status.notFoundStatus(res, notFoundProduct)
         }

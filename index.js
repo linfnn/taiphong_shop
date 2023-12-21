@@ -37,7 +37,9 @@ app.get('/', (req, res) => {
 // Router
 const { productImageRouter } = require('./app/routers/productImgRoute')
 const { productRouter } = require('./app/routers/productRoute')
+const { productTagRouter } = require('./app/routers/productTagRoute')
 
 app.use('/', productImageRouter)
 app.use('/', productRouter)
+app.use('/', productTagRouter)
 app.listen(port, () => console.log(`App listening at: ${port}`))
