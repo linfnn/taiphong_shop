@@ -1,0 +1,87 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code Viewer</title>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+</head>
+<body>
+    <div id="qrcode"></div>
+    <button id="copyButton">Copy QR Code</button>
+
+    <script>
+        $.ajax({
+            url: 'http://localhost:8000/api/show-qrcode',
+            method: 'GET',
+            success: function(response) {
+                console.log(response);
+                const img = new Image();
+                img.src = "data:image/svg+xml;base64," + btoa(response);
+                img.onload = function() {
+                    document.body.appendChild(img);
+                };
+            },
+            error: function(error) {
+                console.error('Error fetching QR code:', error);
+            }
+        });
+
+            </script>
+</body>
+</html> -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>API SVG to JPEG Conversion</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/canvg/1.5/canvg.js"
+    integrity="sha512-n64ECd9pzrV9TwEhl/VV/MOLO6hiIYlzvpT0lx0CAjIUBXWHj8PoVstxzFoQ/5pI97kyBLL4U3PNMAJX+7F6vA=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/canvg/1.5/canvg.min.js"
+    integrity="sha512-Wucjpk84udKVXsFLI8U+zeBZVmq/ufmoDwmF3ywTr+uJ1RnYj9sIGOU171+GFnMc1TI8WgjsJciM/vHJ7K1DRA=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<body>
+
+  <button onclick="fetchAndConvertSvg()">Fetch and Convert SVG</button>
+
+  <script>
+    function fetchAndConvertSvg() {
+      // Thay thế URL bằng URL của API cung cấp SVG
+      var apiUrl = 'https://laravel.upnewskill.asia/api/show-qrcode';
+
+      // Sử dụng Fetch API để lấy dữ liệu SVG từ API
+      fetch(apiUrl)
+        .then(response => response.text())
+        .then(svgString => {
+          // Tạo một canvas để vẽ SVG lên đó
+          var canvas = document.createElement('canvas');
+          var context = canvas.getContext('2d');
+
+          // Vẽ SVG lên canvas bằng canvg   
+          canvg(canvas, svgString);
+
+          // Chuyển canvas thành dữ liệu hình ảnh JPEG
+          var dataUrl = canvas.toDataURL('image/jpeg');
+
+          // Tạo một đối tượng hình ảnh để xem trước hoặc lưu trữ
+          var img = document.createElement('img');
+          img.src = dataUrl;
+
+          // Hiển thị hình ảnh hoặc thực hiện các bước khác tùy ý
+          document.body.appendChild(img);
+        })
+        .catch(error => {
+          console.error('Error fetching SVG:', error);
+        });
+    }
+  </script>
+
+</body>
+
+</html>
