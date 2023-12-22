@@ -29,4 +29,4 @@ const receivingInfoModel = new mongoose.Schema({
     }
 })
 
-module.exports = mongoose.model("receivingInfos", receivingInfoModel);
+module.exports = mongoose.model("receivingInfo", receivingInfoModel);

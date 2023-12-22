@@ -9,10 +9,12 @@ const Schema = mongoose.Schema;
 const orderSchema = new Schema({
     _id: mongoose.Types.ObjectId,
     orderDate: {
-        type: Date
+        type: Date,
+        default: Date.now()
     },
     shippedDate: {
-        type: Date
+        type: Date,
+        default: () => new Date(new Date().getTime() + 5 * 24 * 60 * 60 * 1000)
     },
     note: String,
     orderDetails: [
@@ -25,13 +27,17 @@ const orderSchema = new Schema({
         type: Number,
         default: 0
     },
-    isDeleted: {
-        type: Boolean,
-        default: false
+    shippedTo: {
+        type: mongoose.Types.ObjectId,
+        ref: 'receivingInfo'
     },
     status: {
         type: String,
         default: 'Đã đặt'
+    },
+    isDeleted: {
+        type: Boolean,
+        default: false
     }
 });
 //B4: export Schema ra model

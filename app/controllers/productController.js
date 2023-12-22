@@ -17,17 +17,14 @@ const getAllProducts = async (req, res) => {
         }
         const productFound = await productModel
             .find({ isDeleted: false })
-            // .sort({ isDeleted: false })
-            .skip((condition.page - 1) * condition.limit)
-            .limit(condition.limit)
 
-        if (!tags || tags === undefined) {
+        if (tags === undefined || tags === '') {
             const productList = productFound.filter(product => {
                 return (
                     condition.priceMin <= product.price &&
                     condition.priceMax >= product.price
                 )
-            })
+            }).slice((condition.page - 1) * condition.limit, condition.page * condition.limit)
             if (productList && productList.length > 0) {
                 status.successPaginationStatus(res, productList, pagination, 'Get all products with conditions successfully')
             } else {
@@ -35,13 +32,16 @@ const getAllProducts = async (req, res) => {
             }
         }
         else {
+            if (!mongoose.Types.ObjectId.isValid(tags)) {
+                status.badRequestStatus(res, 'Tag id is invalid')
+            }
             const productList = productFound.filter(product => {
                 return (
                     condition.priceMin <= product.price &&
                     condition.priceMax >= product.price &&
                     product.tags.includes(tags)
                 )
-            })
+            }).slice((condition.page - 1) * condition.limit, condition.page * condition.limit)
             if (productList && productList.length > 0) {
                 status.successPaginationStatus(res, productList, pagination, 'Get all products with conditions successfully')
             } else {
@@ -63,7 +63,7 @@ const getProductById = async (req, res) => {
         }
         const productList = await productModel.findById(productId)
         // const isExistProduct = productList.filter(product => product.isDeleted === false)
-        if (productList && productList.length > 0) {
+        if (productList) {
             status.successStatus(res, productList, 'Get product by id successfully')
         } else {
             status.notFoundStatus(res, notFoundProduct)
@@ -111,23 +111,23 @@ const getConditionProducts = (page, limit, priceMin, priceMax, productList) => {
 // create new product
 const createProducts = async (req, res) => {
     try {
-        // const { title, price, stock, tags, description } = req.body
-        for (let i = 0; i < req.body.length; i++) {
-            const isUnique = await productModel.find({ title: req.body[i].title })
-            if (!req.body[i].title || isUnique.length !== 0) {
+        const { productArr } = req.body
+        for (let i = 0; i < productArr.length; i++) {
+            const isUnique = await productModel.find({ title: productArr[i].title })
+            if (!productArr[i].title || isUnique.length !== 0) {
                 status.badRequestStatus(res, 'Title is required & must be unique value')
             }
-            if (!req.body[i].price || isNaN(req.body[i].price)) {
+            if (!productArr[i].price || isNaN(productArr[i].price)) {
                 status.badRequestStatus(res, 'Price is required')
             }
-            if (!req.body[i].stock || isNaN(req.body[i].stock)) {
+            if (!productArr[i].stock || isNaN(productArr[i].stock)) {
                 status.badRequestStatus(res, 'Stock is required')
             }
-            if (req.body[i].tags.length === 0) {
+            if (productArr[i].tags.length === 0) {
                 status.badRequestStatus(res, 'Tags is required')
             }
         }
-        const newProducts = req.body.map(product => {
+        const newProducts = productArr.map(product => {
             return {
                 _id: new mongoose.Types.ObjectId(),
                 title: product.title,
@@ -152,7 +152,7 @@ const updateProduct = async (req, res) => {
             status.badRequestStatus(res, 'Product Id is invalid')
         }
         const updatedProduct = await productModel.findByIdAndUpdate(productId, req.body)
-        if (updatedProduct && updatedProduct.length > 0) {
+        if (updatedProduct) {
             status.successStatus(res, await productModel.findById(productId), 'Update product by id successfully')
         } else {
             status.notFoundStatus(res, notFoundProduct)
@@ -169,7 +169,7 @@ const deleteProduct = async (req, res) => {
             status.badRequestStatus(res, 'Product Id is invalid')
         }
         const updatedProduct = await productModel.findByIdAndUpdate(productId, { isDeleted: true })
-        if (updatedProduct && updatedProduct.length > 0) {
+        if (updatedProduct) {
             status.successStatus(res, await productModel.findById(productId), 'Soft delete product successfully')
         } else {
             status.notFoundStatus(res, notFoundProduct)

@@ -28,7 +28,7 @@ const accountModel = new mongoose.Schema({
     receivingInfo: [
         {
             type: mongoose.Types.ObjectId,
-            ref: 'receivingInfos'
+            ref: 'receivingInfo'
         }
     ],
     orders: [

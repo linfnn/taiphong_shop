@@ -38,8 +38,12 @@ app.get('/', (req, res) => {
 const { productImageRouter } = require('./app/routers/productImgRoute')
 const { productRouter } = require('./app/routers/productRoute')
 const { productTagRouter } = require('./app/routers/productTagRoute')
+const { orderRouter } = require('./app/routers/orderRoute')
+const { orderDetailRouter } = require('./app/routers/orderDetailRoute')
 
 app.use('/', productImageRouter)
 app.use('/', productRouter)
 app.use('/', productTagRouter)
+app.use('/', orderRouter)
+app.use('/', orderDetailRouter)
 app.listen(port, () => console.log(`App listening at: ${port}`))

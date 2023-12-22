@@ -9,11 +9,13 @@ const orderDetailSchema = new Schema({
     _id: mongoose.Types.ObjectId,
     productId: {
         type: mongoose.Types.ObjectId,
-        ref: 'products'
+        ref: 'products',
+        required: true
     },
     quantity: {
         type: Number,
-        default: 0
+        default: 0,
+        required: true
     },
     isDeleted: {
         type: Boolean,
